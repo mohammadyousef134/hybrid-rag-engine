@@ -6,29 +6,27 @@ def fixed_size(
         chunk_size : int = 500,
         chunk_overlap : int = 50,
 ) -> list[Chunk] :
-
-    start = 0
-    end = min(chunk_size, len(document.raw_text))
-    idx = 0
-    res = []
-    while start < len(document.raw_text) :
-        text = document.raw_text[start:end]
-        source = document.source_file
-        chunk_index = idx
-        strategy = "fixed_size"
-        section_heading = document.section_heading
-        page_number = document.page_number
-        res.append(
-            Chunk(
-                text = text,
-                source_file = source,
-                chunk_index = chunk_index,
-                strategy = strategy,
-                section_heading = section_heading,
-                page_number = page_number,
-            )
+    texts = split_text(document, chunk_size, chunk_overlap)
+    return [
+        Chunk(
+            text=text,
+            source_file=document.source_file,
+            chunk_index=i,
+            strategy="fixed_size",
+            section_heading=document.section_heading,
+            page_number=document.page_number,
         )
+        for i, text in enumerate(texts) if text.strip()
+    ]
+
+
+def split_text(text: str, chunk_size: int = 500, chunk_overlap: int = 50) -> list[str]:
+    start = 0
+    end = min(chunk_size, len(text))
+    res = []
+    while start < len(text):
+        res.append(text[start:end])
         start += chunk_size - chunk_overlap
-        end = min(start + chunk_size, len(document.raw_text))
-        idx += 1
+        end = min(start + chunk_size, len(text))
     return res
+
