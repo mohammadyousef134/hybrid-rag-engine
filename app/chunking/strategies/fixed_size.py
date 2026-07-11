@@ -1,12 +1,12 @@
 from ingestion.schema.loaded_document import LoadedDocument
-from chunking.schema.Chunk import Chunk
+from chunking.schema.chunk import Chunk
 
 def fixed_size(
         document : LoadedDocument,
         chunk_size : int = 500,
         chunk_overlap : int = 50,
 ) -> list[Chunk] :
-    texts = split_text(document, chunk_size, chunk_overlap)
+    texts = split_text(document.raw_text, chunk_size, chunk_overlap)
     return [
         Chunk(
             text=text,

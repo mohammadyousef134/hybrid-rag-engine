@@ -1,5 +1,5 @@
 from chunking.strategies.fixed_size import split_text
-from chunking.schema.Chunk import Chunk
+from chunking.schema.chunk import Chunk
 from ingestion.schema.loaded_document import LoadedDocument
 
 
