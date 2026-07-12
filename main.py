@@ -1,7 +1,5 @@
-from ingestion.load_document import load_document
+from chunking.vector_store import query_chunks
 
-res = load_document("data/raw/sample.md")
-res2 = load_document("data/raw/sample4.txt")
-
-print(res)
-print(res2)
+res = query_chunks("what is this document about?", top=3)
+for r in res:
+    print(r["distance"], r["text"][:80])
