@@ -1,6 +1,7 @@
 from chunking.strategies.fixed_size import split_text
 from chunking.schema.chunk import Chunk
 from ingestion.schema.loaded_document import LoadedDocument
+from chunking.schema.chunk import Chunk, next_chunk_index
 
 
 def structure_aware(document: LoadedDocument, chunk_size: int = 500) -> list[Chunk]:
@@ -10,7 +11,7 @@ def structure_aware(document: LoadedDocument, chunk_size: int = 500) -> list[Chu
         Chunk(
             text=t,
             source_file=document.source_file,
-            chunk_index=i,
+            chunk_index=next_chunk_index(document.source_file),
             strategy="structure_aware",
             section_heading=document.section_heading,
             page_number=document.page_number,

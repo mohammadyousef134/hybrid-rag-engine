@@ -18,11 +18,11 @@ def store_chunks(chunks: list[Chunk]) -> None:
 
     texts = [c.text for c in chunks]
     embeddings = _model.encode(texts).tolist()
-    ids = [f"{c.source_file}::{c.strategy}::{collection.count()}" for c in chunks]
+    ids = [f"{c.source_file}::{c.strategy}::{c.chunk_index}" for c in chunks]
     metadatas = [
         {
             "source_file": c.source_file,
-            "chunk_index": collection.count(),
+            "chunk_index": c.chunk_index,
             "strategy": c.strategy,
             "section_heading": c.section_heading or "",
             "page_number": c.page_number if c.page_number is not None else -1,

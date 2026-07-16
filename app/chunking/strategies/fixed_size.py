@@ -1,5 +1,6 @@
 from ingestion.schema.loaded_document import LoadedDocument
 from chunking.schema.chunk import Chunk
+from chunking.schema.chunk import Chunk, next_chunk_index
 
 def fixed_size(
         document : LoadedDocument,
@@ -11,7 +12,7 @@ def fixed_size(
         Chunk(
             text=text,
             source_file=document.source_file,
-            chunk_index=i,
+            chunk_index=next_chunk_index(document.source_file),
             strategy="fixed_size",
             section_heading=document.section_heading,
             page_number=document.page_number,

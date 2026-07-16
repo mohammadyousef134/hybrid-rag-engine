@@ -3,6 +3,8 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from ingestion.schema.loaded_document import LoadedDocument
 from chunking.schema.chunk import Chunk
+from chunking.schema.chunk import Chunk, next_chunk_index
+
 
 _model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -59,7 +61,7 @@ def _wrap_as_chunks(texts: list[str], document: LoadedDocument) -> list[Chunk]:
         Chunk(
             text=t,
             source_file=document.source_file,
-            chunk_index=i,
+            chunk_index=next_chunk_index(document.source_file),
             strategy="semantic",
             section_heading=document.section_heading,
             page_number=document.page_number,
