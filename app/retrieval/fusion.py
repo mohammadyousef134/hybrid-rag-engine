@@ -1,7 +1,7 @@
 from chunking.bm25_store import query_bm25
 from chunking.vector_store import query_chunks
 
-def hybrid_query(question: str, top: int = 5) -> list[dict]:
+def hybrid_query(question: str, top: int = 20) -> list[dict]:
     dense_results = query_chunks(question, top=20)
     sparse_results = query_bm25(question, top=20)
 
