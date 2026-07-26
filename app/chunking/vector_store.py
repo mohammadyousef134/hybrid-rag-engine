@@ -12,12 +12,25 @@ _model = SentenceTransformer("all-MiniLM-L6-v2")
 collection = _client.get_or_create_collection("documents")
 
 
-def store_chunks(chunks: list[Chunk]) -> None:
+def store_chunks(chunks: list[Chunk], dedup_threshold: float = 0.95) -> None:
     if not chunks:
         return
 
     texts = [c.text for c in chunks]
     embeddings = _model.encode(texts).tolist()
+
+    kept_chunks, kept_embeddings = [], []
+
+    for chunk, embedding in zip(chunks, embeddings):
+        if is_near_duplicate(embedding, dedup_threshold):
+            print(f"Skipping near-duplicate: {chunk.source_file} chunk {chunk.chunk_index}")
+            continue
+        kept_chunks.append(chunk)
+        kept_embeddings.append(embedding)
+
+    if not kept_chunks:
+        return
+
     ids = [f"{c.source_file}::{c.strategy}::{c.chunk_index}" for c in chunks]
     metadatas = [
         {
@@ -32,8 +45,8 @@ def store_chunks(chunks: list[Chunk]) -> None:
 
     collection.upsert(
         ids=ids,
-        embeddings=embeddings,
-        documents=texts,
+        embeddings=kept_embeddings,
+        documents=[c.text for c in kept_chunks],
         metadatas=metadatas,
     )
 
@@ -60,3 +73,19 @@ def query_chunks(question: str, top: int = 5, strategy: str = None) -> list[dict
             results["distances"][0],
         )
     ]
+
+def is_near_duplicate(embedding: list[float], threshold: float = 0.95) -> bool:
+    if collection.count() == 0:
+        return False
+
+    result = collection.query(
+        query_embeddings=[embedding],
+        n_results=1,
+    )
+
+    if not result["distances"][0]:
+        return False
+
+    distance = result["distances"][0][0]
+    similarity = 1 - distance
+    return similarity > threshold
