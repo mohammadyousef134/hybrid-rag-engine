@@ -1,0 +1,98 @@
+[
+  {
+    "question": "What is a hypervisor?",
+    "expected_answer": "The software layer that creates and manages virtual machines, allocating CPU, memory, and storage from the physical host.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What is the difference between a Type 1 and Type 2 hypervisor?",
+    "expected_answer": "Type 1 hypervisors run directly on hardware, while Type 2 hypervisors run on top of a host operating system.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "lookup"
+  },
+  {
+    "question": "Why are containers faster to start than virtual machines?",
+    "expected_answer": "Containers share the host machine's operating system kernel instead of running a full separate OS, making them lighter and able to start in under a second.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What causes a cold start in serverless computing?",
+    "expected_answer": "When a function hasn't been invoked recently, the platform must initialize a new execution environment before running the code, adding latency to that first request.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What is the difference between horizontal and vertical scaling?",
+    "expected_answer": "Horizontal scaling adds or removes entire server instances, while vertical scaling increases or decreases the resources of an existing instance.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "lookup"
+  },
+  {
+    "question": "Why can't a hash be reversed to recover the original password?",
+    "expected_answer": "Hashing is a one-way transformation into a fixed-length string; unlike encryption, the process is deliberately not designed to be reversible.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What's the difference between symmetric and asymmetric encryption?",
+    "expected_answer": "Symmetric encryption uses the same key to encrypt and decrypt, which is fast but requires securely sharing the key beforehand. Asymmetric encryption uses a public key to encrypt and a private key to decrypt, avoiding the key-sharing problem but running slower.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "lookup"
+  },
+  {
+    "question": "How is SQL injection typically prevented?",
+    "expected_answer": "By using parameterized queries instead of directly inserting user input into a SQL string.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What is the core principle behind zero trust architecture?",
+    "expected_answer": "Never automatically trust any request, even one from inside the network perimeter; every request must be authenticated and authorized individually.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "lookup"
+  },
+  {
+    "question": "Why does TLS use both symmetric and asymmetric encryption instead of just one?",
+    "expected_answer": "TLS uses asymmetric encryption during the handshake to securely exchange a temporary key, then switches to symmetric encryption for the actual data transfer, combining the security of asymmetric encryption with the speed of symmetric encryption.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "multi_hop"
+  },
+  {
+    "question": "Why is bcrypt designed to be slow while SHA-256 is designed to be fast, even though both are hashing algorithms?",
+    "expected_answer": "Password hashing algorithms like bcrypt are deliberately slow to make brute-force guessing attacks impractical, while file integrity hashes like SHA-256 are meant to be fast since their purpose is verifying data hasn't changed, not resisting attackers.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "multi_hop"
+  },
+  {
+    "question": "How do containers and CDNs both aim to reduce delay for end users, using different techniques?",
+    "expected_answer": "Containers reduce startup delay by sharing the host OS kernel instead of booting a full virtual machine, while CDNs reduce network delay by caching content on servers physically closer to the user; both minimize a form of latency but through different mechanisms.",
+    "source_file": "data/raw/cloud_computing.md",
+    "category": "multi_hop"
+  },
+  {
+    "question": "How does a web application firewall differ from a network firewall in what it inspects?",
+    "expected_answer": "A network firewall filters traffic based on IP addresses and ports, while a web application firewall inspects the actual content of HTTP requests for attack patterns like SQL injection or XSS.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "lookup"
+  },
+  {
+    "question": "What is the capital of Australia?",
+    "expected_answer": "This information is not present in the provided corpus.",
+    "source_file": null,
+    "category": "no_answer"
+  },
+  {
+    "question": "What was the stock price of Amazon in 2020?",
+    "expected_answer": "This information is not present in the provided corpus.",
+    "source_file": null,
+    "category": "no_answer"
+  },
+  {
+    "question": "What's the best way to protect a system?",
+    "expected_answer": "Ambiguous — the corpus discusses several distinct protections (encryption, hashing, firewalls, zero trust) depending on what kind of threat is meant; a good answer should acknowledge the question is broad rather than picking one arbitrarily.",
+    "source_file": "data/raw/security_basics.md",
+    "category": "ambiguous"
+  }
+]
