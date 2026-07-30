@@ -1,12 +1,12 @@
 from chunking.bm25_store import query_bm25
 from chunking.vector_store import query_chunks
 
-def hybrid_query(question: str, top: int = 20) -> list[dict]:
-    dense_results = query_chunks(question, top=20)
-    sparse_results = query_bm25(question, top=20)
+def hybrid_query(question: str, top_k: int = 20) -> list[dict]:
+    dense_results = query_chunks(question, top_k=20)
+    sparse_results = query_bm25(question, top_k=20)
 
     fused = reciprocal_rank_fusion(dense_results, sparse_results)
-    return fused[:top]
+    return fused[:top_k]
 
 
 def reciprocal_rank_fusion(

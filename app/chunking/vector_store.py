@@ -50,14 +50,14 @@ def store_chunks(chunks: list[Chunk], dedup_threshold: float = 0.95) -> None:
         metadatas=metadatas,
     )
 
-def query_chunks(question: str, top: int = 5, strategy: str = None) -> list[dict]:
+def query_chunks(question: str, top_k: int = 5, strategy: str = None) -> list[dict]:
     query_embedding = _model.encode([question]).tolist()
 
     where = {"strategy": strategy} if strategy else None
 
     results = collection.query(
         query_embeddings=query_embedding,
-        n_results=top,
+        n_results=top_k,
         where=where,
     )
 
@@ -89,3 +89,20 @@ def is_near_duplicate(embedding: list[float], threshold: float = 0.95) -> bool:
     distance = result["distances"][0][0]
     similarity = 1 - distance
     return similarity > threshold
+
+def load_all_chunks_from_chroma() -> list[Chunk]:
+    all_data = collection.get(include=["documents", "metadatas"])
+
+    chunks = []
+    for text, meta in zip(all_data["documents"], all_data["metadatas"]):
+        chunks.append(
+            Chunk(
+                text=text,
+                source_file=meta["source_file"],
+                chunk_index=meta["chunk_index"],
+                strategy=meta["strategy"],
+                section_heading=meta["section_heading"] or None,
+                page_number=meta["page_number"] if meta["page_number"] != -1 else None,
+            )
+        )
+    return chunks
