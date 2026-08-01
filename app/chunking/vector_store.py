@@ -106,3 +106,11 @@ def load_all_chunks_from_chroma() -> list[Chunk]:
             )
         )
     return chunks
+
+def clear_collection() -> None:
+    global collection
+    _client.delete_collection("documents")
+    collection = _client.get_or_create_collection(
+        "documents",
+        metadata={"hnsw:space": "cosine"}
+    )

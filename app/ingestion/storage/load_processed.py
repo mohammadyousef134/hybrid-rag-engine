@@ -3,11 +3,12 @@ import json
 from ingestion.schema.loaded_document import LoadedDocument
 from pathlib import Path
 
-def load_processed(src : str) -> list[LoadedDocument] :
-    path = Path("data/processed") / f"{Path(src).stem}.json"
+ROOT = Path(__file__).resolve().parents[3]
 
-    if not path.exists() :
+def load_processed(source_filename: str) -> list:
+    input_path = ROOT / "data" / "processed" / f"{Path(source_filename).stem}.json"
+    if not input_path.exists():
         return []
-    with open(path) as found :
+    with open(input_path) as found :
         found_as_dic = json.load(found)
         return [LoadedDocument(**doc) for doc in found_as_dic]
