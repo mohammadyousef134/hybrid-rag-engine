@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from ingestion.storage import load_processed
 from ingestion.storage.save_processed import save_processed
 from ingestion.loaders.load_pdf import load_pdf
 from ingestion.loaders.load_txt import load_txt
