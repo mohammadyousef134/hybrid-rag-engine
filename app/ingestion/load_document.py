@@ -18,19 +18,17 @@ def load_document(path: str) -> list:
 
     if ext == "txt":
         res = load_txt(path)
-        save_processed(path, res)
-        return res
     elif ext == "md":
         res = load_markdown(path)
-        save_processed(path, res)
-        return res
     elif ext == "html":
         res = load_html(path)
-        save_processed(path, res)
-        return res
     elif ext == "pdf":
         res = load_pdf(path)
-        save_processed(path, res)
-        return res
     else:
         raise ValueError(f"Unsupported file type: {ext}")
+
+    for doc in res:
+        doc.source_file = path
+
+    save_processed(path, res)
+    return res
