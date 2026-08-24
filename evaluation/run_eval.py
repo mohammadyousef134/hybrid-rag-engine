@@ -8,11 +8,16 @@ from retrieval.fusion import hybrid_query
 from retrieval.reranker import rerank
 from generation.generate_answer import generate_answer
 from evaluation.grading import grade_correctness
+from evaluation.retrieval_metrics import precision_at_k, recall_at_k, reciprocal_rank, average
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Gemini allows 15 requests per minute.
+# Each question uses 2 requests: one for generation and one for grading.
+# Keep this at 7 to stay safely below the limit (14 requests per batch).
 BATCH_SIZE = 7
 WAIT_BETWEEN_BATCHES = 60  # seconds
+RETRIEVAL_TOP_K = 10  # chunks considered for precision/recall/MRR
 
 synced_chunks = load_all_chunks_from_chroma()
 build_bm25_index(synced_chunks)
@@ -29,9 +34,10 @@ for batch_num, batch in enumerate(batches, start=1):
     for item in batch:
         question = item["question"]
         expected_answer = item["expected_answer"]
+        expected_source_file = item["source_file"]
         category = item["category"]
 
-        fused = hybrid_query(question, top_k=10)
+        fused = hybrid_query(question, top_k=RETRIEVAL_TOP_K)
         top_chunks = rerank(question, fused, top_k=3)
         answer = generate_answer(question, top_chunks)
 
@@ -42,6 +48,9 @@ for batch_num, batch in enumerate(batches, start=1):
             "question": question,
             "category": category,
             "verdict": verdict,
+            "precision": precision_at_k(fused, expected_source_file),
+            "recall": recall_at_k(fused, expected_source_file),
+            "reciprocal_rank": reciprocal_rank(fused, expected_source_file),
         })
 
         print(f"[{verdict}] ({category}) {question}")
@@ -53,5 +62,13 @@ for batch_num, batch in enumerate(batches, start=1):
 correct_count = sum(1 for r in results if r["verdict"] == "CORRECT")
 total = len(results)
 
+mean_precision = average([r["precision"] for r in results])
+mean_recall = average([r["recall"] for r in results])
+mean_mrr = average([r["reciprocal_rank"] for r in results])
+
 print(f"\nOverall accuracy: {correct_count}/{total} ({correct_count / total:.0%})")
 print(f"Processed questions: {total}/{len(golden_qa)}")
+print(f"\nRetrieval quality (top {RETRIEVAL_TOP_K}, before rerank):")
+print(f"  Precision@{RETRIEVAL_TOP_K}: {mean_precision:.2f}")
+print(f"  Recall@{RETRIEVAL_TOP_K}:    {mean_recall:.2f}")
+print(f"  MRR:            {mean_mrr:.2f}")

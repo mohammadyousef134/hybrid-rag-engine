@@ -12,6 +12,8 @@ def load_document(path: str) -> list:
 
     cached = load_processed(path)
     if cached :
+        for doc in cached:
+            doc.source_file = path
         return cached
 
     if ext == "txt":

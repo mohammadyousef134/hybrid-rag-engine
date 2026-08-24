@@ -20,7 +20,8 @@ SUPPORTED_EXTENSIONS = {".txt", ".md", ".html", ".pdf"}
 
 def discover_files() -> list[str]:
     return sorted(
-        str(p) for p in RAW_DIR.iterdir()
+        p.relative_to(ROOT).as_posix()
+        for p in RAW_DIR.iterdir()
         if p.suffix.lower() in SUPPORTED_EXTENSIONS
     )
 
